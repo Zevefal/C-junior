@@ -1,0 +1,113 @@
+using System.Net.WebSockets;
+
+namespace playersBase
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            PlayerDataBase playerData = new PlayerDataBase();
+            bool isWorking = true;
+
+
+            while (isWorking)
+            {
+                Console.WriteLine("что хотите сделать?");
+                Console.WriteLine("add - добавить игрока \nban - забанить игрока \nuban - разбанить игрока \nshow - показать игрока \nexit - выход");
+
+                string input = Console.ReadLine().ToLower();
+
+                switch (input)
+                {
+                    case "add":
+                        playerData.AddPlayer();
+                        break;
+                    case "ban":
+                        playerData.BanPlayer();
+                        break;
+                    case "uban":
+                        playerData.UnBanPlayer();
+                        break;
+                    case "show":
+                        playerData.ShowInfo();
+                        break;
+                    case "exit":
+                        isWorking = false;
+                        break;
+                }
+            }
+        }
+    }
+
+    class PlayerDataBase
+    {
+        List<Player> playerList = new();
+
+        public void AddPlayer()
+        {
+            Console.WriteLine("Введите имя игрока: ");
+            Player player = new (Console.ReadLine());
+            playerList.Add(player);
+        }
+
+        public void BanPlayer()
+        {
+            Console.WriteLine("Какого игрока забанить?");
+            playerList[Convert.ToInt32(Console.ReadLine())].Ban();
+        }
+
+        public void UnBanPlayer()
+        {
+            Console.WriteLine("Какого игрока разбанить?");
+            playerList[Convert.ToInt32(Console.ReadLine())].UnBan();
+        }
+
+        public void RemovePlayer()
+        {
+            Console.WriteLine("Какого игрока удалить?");
+            playerList.RemoveAt(Convert.ToInt32((Console.ReadLine())));
+        }
+
+        public void ShowInfo()
+        {
+            //playerList[Convert.ToInt32(Console.ReadLine())].ShowInfo();
+            foreach (var player in playerList)
+            {
+                player.ShowInfo();
+            }
+        }
+    }
+
+    class Player
+    {
+        private Random random = new Random();
+        private int minLevel = 1, maxLevel = 81;
+        private static int _id = 0;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public int LevelPlayer { get; set; }
+        public bool isBanned { get; set; }
+
+        public Player(string name)
+        {
+            Id = ++_id;
+            Name = name;
+            LevelPlayer = random.Next(minLevel,maxLevel);
+        }
+
+        public void Ban()
+        {
+            isBanned = true;
+        }
+
+        public void UnBan()
+        {
+            isBanned=false;
+        }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine($"ID - {Id} \nName - {Name} \nLevelPlayer - {LevelPlayer} \nBan - {isBanned}");
+        }
+    }
+}
